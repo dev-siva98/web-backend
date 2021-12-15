@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator')
 
-const instance = mongoose.Schema({
+
+const productSchema = mongoose.Schema({
     pname: String,
     weight: String,
     pcode: String,
@@ -9,6 +11,14 @@ const instance = mongoose.Schema({
         url: String,
         publicId: String
     },
-    id: String
+    id: {
+        type : String,
+        index: true,
+        unique: true,
+        required: true
+    }
 })
-module.exports = mongoose.model('product', instance)
+
+productSchema.plugin(uniqueValidator)
+
+module.exports = mongoose.model('product', productSchema)

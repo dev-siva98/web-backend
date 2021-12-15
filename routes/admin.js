@@ -12,9 +12,9 @@ router.get('/', function (req, res, next) {
 router.get('/products', (req, res) => {
   let sort= JSON.parse(req.query.sort)
   let range=JSON.parse(req.query.range)
-  let startIndex=range[0]+1
-  let endIndex=range[1]+1
-  let limit=range[1]-range[0]+1
+  let startIndex=range[0]
+  let endIndex=range[1]
+  let limit=range[1]-range[0]
   console.log(startIndex, endIndex, limit)
 
 
@@ -26,13 +26,36 @@ router.get('/products', (req, res) => {
 
 router.post('/products', (req, res)=>{
   productHelpers.addProduct(req.body).then((response)=>{
-    res.send(response)
+    if(response.status){
+    res.status(500).send(response)
+    }
+    else{
+      res.send(response)
+    }
   })
 })
 
 router.get('/products/:id', (req,res)=>{
   productHelpers.getProduct(req.params.id).then((response)=>{
     res.send(response)
+  })
+})
+
+router.delete('/products/:id', (req,res) => {
+  productHelpers.deleteProduct(req.params.id).then((response)=>{
+    res.send(response)
+  })
+})
+
+router.put('/products/:id', (req,res)=>{
+  productHelpers.updateProduct(req.params.id, req.body).then((response)=>{
+    if(response.status){
+      console.log(response.message)
+      res.status(500).send(response)
+    }
+    else{
+      res.send(response)
+    }
   })
 })
 
