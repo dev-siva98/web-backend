@@ -20,7 +20,12 @@ router.get('/products', (req, res) => {
 
   productHelpers.getAllProducts(startIndex, limit, sort[0],sort[1]).then((response)=>{
     res.header('Content-Range', `products : ${startIndex}-${endIndex}/${response.count}`)
-    res.send(response.products)
+    if(response.status){
+      res.status(500).send(response)
+    }
+    else{
+      res.send(response.products)
+    }
   })
 })
 
@@ -30,27 +35,41 @@ router.post('/products', (req, res)=>{
     res.status(500).send(response)
     }
     else{
-      res.send(response)
+      if(response.status){
+        res.status(500).send(response)
+      }
+      else{
+        res.send(response)
+      }
     }
   })
 })
 
 router.get('/products/:id', (req,res)=>{
   productHelpers.getProduct(req.params.id).then((response)=>{
-    res.send(response)
+    if(response.status){
+      res.status(500).send(response)
+    }
+    else{
+      res.send(response)
+    }
   })
 })
 
 router.delete('/products/:id', (req,res) => {
   productHelpers.deleteProduct(req.params.id).then((response)=>{
-    res.send(response)
+    if(response.status){
+      res.status(500).send(response)
+    }
+    else{
+      res.send(response)
+    }
   })
 })
 
 router.put('/products/:id', (req,res)=>{
   productHelpers.updateProduct(req.params.id, req.body).then((response)=>{
     if(response.status){
-      console.log(response.message)
       res.status(500).send(response)
     }
     else{

@@ -3,13 +3,22 @@ var uniqueValidator = require('mongoose-unique-validator')
 
 
 const productSchema = mongoose.Schema({
-    pname: String,
-    weight: String,
+    pname: {
+        type : String,
+        required: true
+    },
+    weight: {
+        type : String,
+        required: true
+    },
     pcode: String,
-    price: String,
+    price: {
+        type : String,
+        required: true
+    },
     image: {
-        url: String,
-        publicId: String
+        type : String,
+        required: true
     },
     id: {
         type : String,

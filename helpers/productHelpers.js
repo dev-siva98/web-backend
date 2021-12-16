@@ -11,7 +11,7 @@ module.exports = {
                 resolve({ products, count })
             }
             else {
-                console.log('Error')
+                resolve({status:true, message: err.toString()})
             }
         })
     },
@@ -34,7 +34,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             db.find({ id: proId }, (err, data) => {
                 if (err) {
-                    console.log("Hai*****" + err)
+                    resolve({status:true, message: err.toString()})
                 }
                 else {
                     resolve(data[0])
@@ -47,7 +47,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             db.deleteOne({ id: proId }, (err, data) => {
                 if (err) {
-                    console.log(err)
+                    resolve({status:true, message: err.toString()})
                 }
                 else {
                     resolve({ id: proId })
