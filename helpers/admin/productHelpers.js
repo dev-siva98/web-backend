@@ -1,4 +1,4 @@
-var {ProductsDb} = require('../config/database')
+var {ProductsDb} = require('../../config/database')
 var objectId = require('mongoose').Types.ObjectId
 
 

@@ -1,4 +1,4 @@
-var {UsersDb} = require('../config/database')
+var {UsersDb} = require('../../config/database')
 
 module.exports = {
 

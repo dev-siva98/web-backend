@@ -1,8 +1,8 @@
 var express = require('express');
-const OrderHelpers = require('../helpers/OrderHelpers');
 var router = express.Router();
-var productHelpers = require('../helpers/productHelpers')
-var userHelpers = require('../helpers/userHelpers')
+const OrderHelpers = require('../helpers/admin/OrderHelpers');
+var productHelpers = require('../helpers/admin/productHelpers')
+var userHelpers = require('../helpers/admin/userHelpers')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {

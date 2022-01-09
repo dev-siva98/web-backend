@@ -9,6 +9,7 @@ var logger = require('morgan');
 
 
 var adminRouter = require('./routes/admin');
+var userRouter = require('./routes/users')
 
 var app = express();
 
@@ -32,6 +33,7 @@ mongoose.connect('mongodb+srv://admin:admin@cluster0.ebjjs.mongodb.net/makecake?
 })
 
 app.use('/', adminRouter);
+app.use('/user', userRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

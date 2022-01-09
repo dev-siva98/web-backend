@@ -1,35 +1,46 @@
 var express = require('express');
 var router = express.Router();
-const db = require('../config/database')
-var file = require('../data')
+var productHelpers = require('../helpers/user/productHelpers')
 
 
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'Backend' });
 });
 
-
-router.get('/users', (req, res, next) => {
-  res.send('respond with a resource');
-});
-
-router.get('/orders', (req, res) => {
-  res.send(data);
-})
-
-router.post('/addproducts', (req, res) => {
-  console.log(req.body)
-  const body = req.body;
-
-  db.create(body, (err, data) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      res.status(201).send(data)
-    }
+router.get('/products', (req,res) =>{
+  productHelpers.getAllProducts().then((response)=>{
+    console.log(response);
+    res.send(response)
   })
-
 })
+
+
+
+
+
+
+
+// router.get('/users', (req, res, next) => {
+//   res.send('respond with a resource');
+// });
+
+// router.get('/orders', (req, res) => {
+//   res.send(data);
+// })
+
+// router.post('/addproducts', (req, res) => {
+//   console.log(req.body)
+//   const body = req.body;
+
+//   db.create(body, (err, data) => {
+//     if (err) {
+//       res.status(500).send(err)
+//     } else {
+//       res.status(201).send(data)
+//     }
+//   })
+
+// })
 
 // router.get('/products', (req, res) => {
 //   res.header('Content-Range', `products : 0-${file.sync.length}/${file.sync.length}`)

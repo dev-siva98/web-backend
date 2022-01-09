@@ -1,4 +1,4 @@
-var {OrderDb} =require('../config/database')
+var {OrderDb} =require('../../config/database')
 
 module.exports = {
 
