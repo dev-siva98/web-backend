@@ -12,6 +12,7 @@ var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/users')
 
 var app = express();
+var session = require('express-session')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,29 +20,35 @@ app.set('view engine', 'jade');
 
 app.use(cors({
   origin: '*',
-  exposedHeaders:'Content-Range'
+  exposedHeaders: 'Content-Range'
 }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-mongoose.connect('mongodb+srv://admin:admin@cluster0.ebjjs.mongodb.net/makecake?retryWrites=true&w=majority').then(()=>{
+mongoose.connect('mongodb+srv://admin:admin@cluster0.ebjjs.mongodb.net/makecake?retryWrites=true&w=majority').then(() => {
   console.log('Database Connected');
-}).catch((err)=>{
-  console.log("Database Connection Error - "+err);
+}).catch((err) => {
+  console.log("Database Connection Error - " + err);
 })
+app.use(session({
+  secret: "key",
+  cookie: { maxAge: 6000000 },
+  resave: true,
+  saveUninitialized: true
+}))
 
 app.use('/', adminRouter);
 app.use('/user', userRouter)
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

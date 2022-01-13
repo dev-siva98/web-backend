@@ -30,8 +30,8 @@ const productSchema = mongoose.Schema({
 
 const userSchema = mongoose.Schema({
     name: String,
-    email: String,
     mobile: String,
+    password: String,
     id: {
         type: String,
         index: true,
@@ -44,7 +44,7 @@ const orderSchema = mongoose.Schema({
     user: String,
     total: String,
     date: Date,
-    orderStatus:String,
+    orderStatus: String,
     items: Array,
     id: {
         type: String,

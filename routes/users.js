@@ -1,16 +1,40 @@
 var express = require('express');
 var router = express.Router();
-var productHelpers = require('../helpers/user/productHelpers')
+var productHelpers = require('../helpers/user/productHelpers');
+const userHelpers = require('../helpers/user/userHelpers');
 
 
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'Backend' });
 });
 
-router.get('/products', (req,res) =>{
-  productHelpers.getAllProducts().then((response)=>{
+router.get('/products', (req, res) => {
+  productHelpers.getAllProducts().then((response) => {
     console.log(response);
     res.send(response)
+  })
+})
+
+router.post('/signup', (req, res) => {
+  userHelpers.doSignup(req.body).then((response)=>{
+    if(response.status){
+      req.session.loggedIn=true
+      console.log(response)
+    }
+    else{
+      console.log(response)
+    }
+  })
+})
+
+router.post('/signin', (req, res) => {
+  userHelpers.doSignin(req.body).then((response)=>{
+    if(response.status){
+      req.session.loggedIn=true
+      res.send(response)
+    }else {
+      res.send(response)
+    }
   })
 })
 
