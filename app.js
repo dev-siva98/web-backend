@@ -13,6 +13,7 @@ var userRouter = require('./routes/users')
 
 var app = express();
 var session = require('express-session')
+require('dotenv').config()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-mongoose.connect('mongodb+srv://admin:admin@cluster0.ebjjs.mongodb.net/makecake?retryWrites=true&w=majority').then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log('Database Connected');
 }).catch((err) => {
   console.log("Database Connection Error - " + err);

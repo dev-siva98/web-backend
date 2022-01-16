@@ -18,7 +18,6 @@ router.get('/products', (req, res) => {
 router.post('/signup', (req, res) => {
   userHelpers.doSignup(req.body).then((response)=>{
     if(response.status){
-      req.session.loggedIn=true
       console.log(response)
     }
     else{

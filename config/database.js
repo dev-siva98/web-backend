@@ -25,6 +25,10 @@ const productSchema = mongoose.Schema({
         index: true,
         unique: true,
         required: true
+    },
+    createdAt: {
+        type : Date,
+        default: Date.now
     }
 })
 
@@ -37,13 +41,16 @@ const userSchema = mongoose.Schema({
         index: true,
         unique: true,
         required: true
+    },
+    createdAt: {
+        type : Date,
+        default: Date.now
     }
 })
 
 const orderSchema = mongoose.Schema({
     user: String,
     total: String,
-    date: Date,
     orderStatus: String,
     items: Array,
     id: {
@@ -51,6 +58,10 @@ const orderSchema = mongoose.Schema({
         index: true,
         unique: true,
         required: true
+    },
+    createdAt: {
+        type : Date,
+        default: Date.now
     }
 })
 

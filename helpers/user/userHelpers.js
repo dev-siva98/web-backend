@@ -1,5 +1,7 @@
 var { UsersDb } = require('../../config/database')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 
 module.exports = {
@@ -19,7 +21,9 @@ module.exports = {
                             resolve(err.message)
                         }
                         else {
-                            resolve({ status: true, data })
+                            let user = {id : data.id}
+                            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+                            resolve({ status: true, data, accessToken:accessToken })
                         }
                     })
                 }
