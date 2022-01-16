@@ -2,15 +2,15 @@ var express = require('express');
 var router = express.Router();
 var productHelpers = require('../helpers/user/productHelpers');
 const userHelpers = require('../helpers/user/userHelpers');
+const auth = require('./auth')
 
 
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'Backend' });
 });
 
-router.get('/products', (req, res) => {
+router.get('/products', auth, (req, res) => {
   productHelpers.getAllProducts().then((response) => {
-    console.log(response);
     res.send(response)
   })
 })
@@ -19,6 +19,7 @@ router.post('/signup', (req, res) => {
   userHelpers.doSignup(req.body).then((response)=>{
     if(response.status){
       console.log(response)
+      res.send(response)
     }
     else{
       console.log(response)

@@ -21,9 +21,11 @@ module.exports = {
                             resolve(err.message)
                         }
                         else {
-                            let user = {id : data.id}
-                            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-                            resolve({ status: true, data, accessToken:accessToken })
+                            const accessToken = jwt.sign({ id: data.id },
+                                process.env.ACCESS_TOKEN_SECRET,
+                                { expiresIn: 3600 }
+                            )
+                            resolve({ status: true, data, accessToken})
                         }
                     })
                 }

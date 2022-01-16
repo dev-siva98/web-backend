@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-var uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require('mongoose-unique-validator')
+
 
 
 const productSchema = mongoose.Schema({
@@ -28,7 +29,9 @@ const productSchema = mongoose.Schema({
     },
     createdAt: {
         type : Date,
-        default: Date.now
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata'
+          })
     }
 })
 
@@ -61,7 +64,9 @@ const orderSchema = mongoose.Schema({
     },
     createdAt: {
         type : Date,
-        default: Date.now
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata'
+          })
     }
 })
 
