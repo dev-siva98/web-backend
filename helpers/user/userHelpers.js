@@ -18,14 +18,14 @@ module.exports = {
                     userDetails.password = hash
                     UsersDb.create(userDetails, (err, data) => {
                         if (err) {
-                            resolve(err.message)
+                            resolve({error : true, message : 'User already exist'})
                         }
                         else {
                             const accessToken = jwt.sign({ id: data.id },
                                 process.env.ACCESS_TOKEN_SECRET,
                                 { expiresIn: 3600 }
                             )
-                            resolve({ status: true, data, accessToken})
+                            resolve({ data, accessToken })
                         }
                     })
                 }
@@ -40,7 +40,11 @@ module.exports = {
                 bcrypt.compare(userDetails.password, user.password).then((status) => {
                     if (status) {
                         console.log('Login Success');
-                        resolve({ status: true, user })
+                        const accessToken = jwt.sign({ id: user.id },
+                            process.env.ACCESS_TOKEN_SECRET,
+                            { expiresIn: 3600 }
+                        )
+                        resolve({ status: true, user, accessToken })
                     } else {
                         console.log('Login Failed');
                         resolve({ status: false, message: 'Login Failed' })

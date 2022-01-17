@@ -9,36 +9,34 @@ router.get('/', (req, res, next) => {
   res.render('index', { title: 'Backend' });
 });
 
-router.get('/products', auth, (req, res) => {
-  productHelpers.getAllProducts().then((response) => {
-    res.send(response)
-  })
-})
 
 router.post('/signup', (req, res) => {
-  userHelpers.doSignup(req.body).then((response)=>{
-    if(response.status){
+  userHelpers.doSignup(req.body).then((response) => {
       console.log(response)
       res.send(response)
-    }
-    else{
-      console.log(response)
-    }
   })
 })
 
 router.post('/signin', (req, res) => {
-  userHelpers.doSignin(req.body).then((response)=>{
-    if(response.status){
-      req.session.loggedIn=true
+  userHelpers.doSignin(req.body).then((response) => {
+    if (response.status) {
       res.send(response)
-    }else {
+    } else {
       res.send(response)
     }
   })
 })
 
+router.get('/products', auth, (req, res) => {
+  if (req.authenticated) {
+    productHelpers.getAllProducts().then((response) => {
+      res.send(response)
+    })
+  } else {
+    res.send({ error: true, message: 'Not Authorized' })
+  }
 
+})
 
 
 
