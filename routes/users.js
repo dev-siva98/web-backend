@@ -10,35 +10,41 @@ router.get('/', (req, res, next) => {
 });
 
 
+router.get('/auth', auth, (req, res) => {
+  if (req.authenticated) {
+    userHelpers.getUser(req.user.id).then(response => {
+      res.send(response)
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
 router.post('/signup', (req, res) => {
   userHelpers.doSignup(req.body).then((response) => {
+    userHelpers.getUser(response.id).then(user => {
+      response.user = user
       console.log(response)
       res.send(response)
+    })
   })
 })
 
 router.post('/signin', (req, res) => {
   userHelpers.doSignin(req.body).then((response) => {
-    if (response.status) {
+    userHelpers.getUser(response.id).then(user => {
+      response.user = user
+      console.log(response)
       res.send(response)
-    } else {
-      res.send(response)
-    }
+    })
   })
 })
 
-router.get('/products', auth, (req, res) => {
-  if (req.authenticated) {
-    productHelpers.getAllProducts().then((response) => {
-      res.send(response)
-    })
-  } else {
-    res.send({ error: true, message: 'Not Authorized' })
-  }
-
+router.get('/products', (req, res) => {
+  productHelpers.getAllProducts().then((response) => {
+    res.send(response)
+  })
 })
-
-
 
 
 

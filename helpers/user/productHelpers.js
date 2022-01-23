@@ -9,7 +9,7 @@ module.exports = {
                 resolve(products)
             }
             else {
-                resolve({status:true, message: err.toString()})
+                resolve({error: true, message: err.toString()})
             }
         })
     },

@@ -9,7 +9,7 @@ function auth(req, res, next) {
     const token=authHeader.split(' ')[1]
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            console.log("" + err)
+            console.log(err.message)
             req.authenticated = false
             req.user = null
         } else {

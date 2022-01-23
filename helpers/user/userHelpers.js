@@ -6,6 +6,19 @@ require('dotenv').config()
 
 module.exports = {
 
+    getUser: (userId) => {
+        return new Promise((resolve, reject) => {
+            UsersDb.find({ id: userId }, { password: 0 }, (err, data) => {
+                if (err) {
+                    console.log(err.message)
+                    resolve({ error: true, message: 'User not found' })
+                } else {
+                    resolve(data[0])
+                }
+            })
+        })
+    },
+
     doSignup: (userDetails) => {
         return new Promise(async (resolve, reject) => {
 
@@ -18,14 +31,14 @@ module.exports = {
                     userDetails.password = hash
                     UsersDb.create(userDetails, (err, data) => {
                         if (err) {
-                            resolve({error : true, message : 'User already exist'})
+                            resolve({ error: true, message: 'User already exist' })
                         }
                         else {
                             const accessToken = jwt.sign({ id: data.id },
                                 process.env.ACCESS_TOKEN_SECRET,
                                 { expiresIn: 3600 }
                             )
-                            resolve({ data, accessToken })
+                            resolve({ id: data.id, accessToken })
                         }
                     })
                 }
@@ -44,15 +57,15 @@ module.exports = {
                             process.env.ACCESS_TOKEN_SECRET,
                             { expiresIn: 3600 }
                         )
-                        resolve({ status: true, user, accessToken })
+                        resolve({ id: user.id , accessToken })
                     } else {
                         console.log('Login Failed');
-                        resolve({ status: false, message: 'Login Failed' })
+                        resolve({ error: true, message: 'Login Failed' })
                     }
                 })
             } else {
                 console.log('No User Found');
-                resolve({ status: false, message: 'No user found' })
+                resolve({ error: true, message: 'No user found' })
             }
         })
     },
