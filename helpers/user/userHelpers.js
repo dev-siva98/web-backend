@@ -57,7 +57,7 @@ module.exports = {
                             process.env.ACCESS_TOKEN_SECRET,
                             { expiresIn: 3600 }
                         )
-                        resolve({ id: user.id , accessToken })
+                        resolve({ id: user.id, accessToken })
                     } else {
                         console.log('Login Failed');
                         resolve({ error: true, message: 'Login Failed' })
@@ -70,6 +70,18 @@ module.exports = {
         })
     },
 
+    addToCart: (userId, product) => {
+        return new Promise((resolve, reject) => {
+            UsersDb.updateOne({ "id": userId }, { "$push": { "cart": product } }, (err, data) => {
+                if (err) {
+                    console.log(err.message)
+                    resolve({ error: true, message: 'User not found' })
+                } else {
+                    console.log(data)
+                }
+            })
+        })
+    }
 
 
 }

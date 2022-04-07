@@ -28,10 +28,10 @@ const productSchema = mongoose.Schema({
         required: true
     },
     createdAt: {
-        type : Date,
+        type: Date,
         default: new Date().toLocaleString('en-US', {
             timeZone: 'Asia/Kolkata'
-          })
+        })
     }
 })
 
@@ -46,8 +46,13 @@ const userSchema = mongoose.Schema({
         required: true
     },
     createdAt: {
-        type : Date,
+        type: Date,
         default: Date.now
+    },
+    cart: {
+        type: Array,
+        proId: String,
+        quantity: Number
     }
 })
 
@@ -63,10 +68,10 @@ const orderSchema = mongoose.Schema({
         required: true
     },
     createdAt: {
-        type : Date,
+        type: Date,
         default: new Date().toLocaleString('en-US', {
             timeZone: 'Asia/Kolkata'
-          })
+        })
     }
 })
 

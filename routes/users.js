@@ -46,7 +46,18 @@ router.get('/products', (req, res) => {
   })
 })
 
+router.post('/addtocart', auth, (req, res) => {
+  console.log(req.body)
+  userHelpers.addToCart(req.user.id, req.body).then((response) => {
+    res.send(response)
+  })
+})
 
+router.get('/userdetails', auth, (req, res) => {
+  userHelpers.getUser(req.user.id).then(response => {
+    res.send(response)
+  })
+})
 
 // router.get('/users', (req, res, next) => {
 //   res.send('respond with a resource');
