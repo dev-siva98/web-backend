@@ -1,4 +1,4 @@
-var { UsersDb } = require('../../config/database')
+var { UsersDb, CartSchema } = require('../../config/database')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -71,15 +71,20 @@ module.exports = {
     },
 
     addToCart: (userId, product) => {
-        return new Promise((resolve, reject) => {
-            UsersDb.updateOne({ "id": userId }, { "$push": { "cart": product } }, (err, data) => {
-                if (err) {
-                    console.log(err.message)
-                    resolve({ error: true, message: 'User not found' })
+        return new Promise(async (resolve, reject) => {
+            let cart = await CartSchema.findOne({ userId: userId });
+
+            if (cart) {
+                let itemIndex = cart.products.findIndex(p => p.pcode === product.pcode);
+
+                if (itemIndex > -1) {
+                    let productItem = cart.products[itemIndex];
+                    productItem.quantity++
+                    cart.products[itemIndex] = productItem
                 } else {
-                    console.log(data)
+                    CartSchema.cart.push
                 }
-            })
+            }
         })
     }
 

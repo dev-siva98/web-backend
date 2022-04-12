@@ -1,17 +1,16 @@
-var {ProductsDb} = require('../../config/database')
+var { ProductsDb } = require('../../config/database')
 
 module.exports = {
 
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            let products = await ProductsDb.find()
-            if (products) {
-                resolve(products)
-            }
-            else {
-                resolve({error: true, message: err.toString()})
-            }
+            ProductsDb.find((err, data) => {
+                if (err) {
+                    resolve({ error: true, message: err.message })
+                } else {
+                    resolve(data)
+                }
+            })
         })
     },
-
 }

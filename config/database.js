@@ -12,19 +12,24 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    pcode: String,
+    id: {
+        type: String,
+        index: true,
+        unique: true,
+        required: true
+    },
+    proId: {
+        type: String,
+        index: true,
+        unique: true,
+        required: true
+    },
     price: {
         type: String,
         required: true
     },
     image: {
         type: String,
-        required: true
-    },
-    id: {
-        type: String,
-        index: true,
-        unique: true,
         required: true
     },
     createdAt: {
@@ -48,12 +53,28 @@ const userSchema = mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    cart: {
-        type: Array,
-        proId: String,
-        quantity: Number
     }
+})
+
+const CartSchema = mongoose.Schema({
+    userId: {
+        type: String,
+        index: true,
+        unique: true,
+        required: true
+    },
+    products: [
+        {
+            pname: String,
+            weight: String,
+            pcode: String,
+            price: String,
+            image: String,
+            id: String,
+            createdAt: Date,
+            quantity: Number
+        }
+    ]
 })
 
 const orderSchema = mongoose.Schema({

@@ -40,8 +40,8 @@ app.use(session({
   saveUninitialized: true
 }))
 
-app.use('/', adminRouter);
-app.use('/user', userRouter)
+app.use('/admin', adminRouter);
+app.use('/', userRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

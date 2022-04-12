@@ -3,25 +3,27 @@ var objectId = require('mongoose').Types.ObjectId
 
 
 module.exports = {
-    getAllProducts: (start, limit, field, sortOrder) => {
+    getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            let products = await ProductsDb.find().limit(limit).skip(start).sort({ [field]: sortOrder }).exec()
+            let products = await ProductsDb.find().exec()
             if (products) {
                 let count = await ProductsDb.countDocuments()
                 resolve({ products, count })
             }
             else {
-                resolve({status:true, message: err.toString()})
+                resolve({error: true, message: err.toString()})
             }
         })
     },
 
     addProduct: (details) => {
-        details.id = "CC" + details.id
+        details.proId = "CC" + details.proId
+        details.id = details.proId
         return new Promise((resolve, reject) => {
             ProductsDb.create(details, (err, data) => {
                 if (err) {
-                    resolve({ status: true, message: err.toString() })
+                    console.log(err.message)
+                    resolve({ error: true, message: err.message })
                 }
                 else {
                     resolve(details)
@@ -34,7 +36,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             ProductsDb.find({ id: proId }, (err, data) => {
                 if (err) {
-                    resolve({status:true, message: err.toString()})
+                    resolve({error: true, message: err.toString()})
                 }
                 else {
                     resolve(data[0])
@@ -47,7 +49,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             ProductsDb.deleteOne({ id: proId }, (err, data) => {
                 if (err) {
-                    resolve({status:true, message: err.toString()})
+                    resolve({error: true, message: err.toString()})
                 }
                 else {
                     resolve({ id: proId })
@@ -62,7 +64,7 @@ module.exports = {
                 details,
                 (err, data)=>{
                 if(err){
-                    resolve({status:true, message: err.toString()})
+                    resolve({error: true, message: err.toString()})
                 }
                 else{
                     resolve({id:proId})
