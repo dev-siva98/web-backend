@@ -8,14 +8,7 @@ module.exports = {
 
     getUser: (userId) => {
         return new Promise((resolve, reject) => {
-            UsersDb.find({ id: userId }, { password: 0 }, (err, data) => {
-                if (err) {
-                    console.log(err.message)
-                    resolve({ error: true, message: 'User not found' })
-                } else {
-                    resolve(data[0])
-                }
-            })
+            UsersDb.find({ id: userId }, { password: 0 }).exec
         })
     },
 
@@ -72,18 +65,45 @@ module.exports = {
 
     addToCart: (userId, product) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await CartSchema.findOne({ userId: userId });
 
-            if (cart) {
-                let itemIndex = cart.products.findIndex(p => p.pcode === product.pcode);
+            try {
+                let cart = await CartSchema.findOne({ userId: userId });
 
-                if (itemIndex > -1) {
-                    let productItem = cart.products[itemIndex];
-                    productItem.quantity++
-                    cart.products[itemIndex] = productItem
+                if (cart) {
+                    let itemIndex = cart.products.findIndex(p => p.pcode === product.pcode);
+
+                    if (itemIndex > -1) {
+                        let productItem = cart.products[itemIndex];
+                        productItem.quantity++
+                        cart.products[itemIndex] = productItem
+                    } else {
+                        cart.products.push(product)
+                    }
+                    cart = await cart.save()
+                    resolve(cart)
                 } else {
-                    CartSchema.cart.push
+                    const newCart = await CartSchema.create({ userId, product })
+                    resolve(newCart)
                 }
+            } catch (err) {
+                console.log(err);
+                resolve({ error: true, message: err.message })
+            }
+        })
+    },
+
+    getCart: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let cart = await CartSchema.findOne({ userId: userId }).exec()
+                if (cart) {
+                    resolve(cart)
+                } else {
+                    resolve([])
+                }
+            } catch (err) {
+                console.log(err)
+                resolve({ error: true, message: err.message })
             }
         })
     }

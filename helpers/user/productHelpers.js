@@ -4,7 +4,7 @@ module.exports = {
 
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            ProductsDb.find((err, data) => {
+            ProductsDb.find().exec((err, data) => {
                 if (err) {
                     resolve({ error: true, message: err.message })
                 } else {

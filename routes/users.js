@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
 router.get('/auth', auth, (req, res) => {
   if (req.authenticated) {
     userHelpers.getUser(req.user.id).then(response => {
-      res.send(response)
+      res.status(200).send(response)
     })
   } else {
     res.send({ error: true, message: 'Unauthorized' })
@@ -51,16 +51,32 @@ router.get('/products', (req, res) => {
 })
 
 router.post('/addtocart', auth, (req, res) => {
-  console.log(req.body)
-  userHelpers.addToCart(req.user.id, req.body).then((response) => {
-    res.send(response)
-  })
+  if (req.authenticated) {
+    userHelpers.addToCart(req.user.id, req.body).then((response) => {
+      if (response.error) {
+        res.status(500).send(response.message)
+      } else {
+        console.log(response)
+        res.status(201).send(response)
+      }
+    })
+  } else {
+    res.status(401).send('Unauthorized')
+  }
 })
 
-router.get('/userdetails', auth, (req, res) => {
-  userHelpers.getUser(req.user.id).then(response => {
-    res.send(response)
-  })
+router.get('/fetchcart', auth, (req, res) => {
+  if (req.authenticated) {
+    userHelpers.getCart(req.user.id).then(response => {
+      if (response.error) {
+        res.status(500).send(response.message)
+      } else {
+        res.status(200).send(response)
+      }
+    })
+  } else {
+    res.status(401).send('Unauthorized')
+  }
 })
 
 module.exports = router;
