@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-const OrderHelpers = require('../helpers/admin/OrderHelpers');
-var productHelpers = require('../helpers/admin/productHelpers')
-var userHelpers = require('../helpers/admin/userHelpers')
+const OrderHelpers = require('../helpers/OrderHelpers');
+var productHelpers = require('../helpers/productHelpers')
+var userHelpers = require('../helpers/userHelpers')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
   res.render('index', { title: 'Backend' });
 });
 

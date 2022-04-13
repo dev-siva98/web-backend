@@ -1,18 +1,16 @@
-var {ProductsDb} = require('../../config/database')
-var objectId = require('mongoose').Types.ObjectId
-
+var { ProductsDb } = require('../config/database')
 
 module.exports = {
+
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            let products = await ProductsDb.find().exec()
-            if (products) {
-                let count = await ProductsDb.countDocuments()
-                resolve({ products, count })
-            }
-            else {
-                resolve({error: true, message: err.toString()})
-            }
+            ProductsDb.find().exec((err, data) => {
+                if (err) {
+                    resolve({ error: true, message: err.message })
+                } else {
+                    resolve(data)
+                }
+            })
         })
     },
 
@@ -72,6 +70,4 @@ module.exports = {
             })
         })
     }
-
-
 }

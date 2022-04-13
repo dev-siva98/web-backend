@@ -102,6 +102,7 @@ productSchema.plugin(uniqueValidator)
 
 const ProductsDb = mongoose.model('product', productSchema)
 const UsersDb = mongoose.model('user', userSchema)
+const CartDb = mongoose.model('cart', CartSchema)
 const OrderDb = mongoose.model('order', orderSchema)
 
-module.exports = { ProductsDb, UsersDb, OrderDb }
+module.exports = { ProductsDb, UsersDb,CartDb, OrderDb }
