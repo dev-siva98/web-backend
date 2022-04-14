@@ -4,12 +4,9 @@ module.exports = {
 
     addToCart: async (userId, product) => {
         return await new Promise(async (resolve, reject) => {
-            let cart = await CartDb.findOne({ userId: userId }).exec()
-                .catch(err => {
-                    reject({ message: 'Error fetching cart' })
-                })
+            let cart = await CartDb.findOne({ userId: userId })
             if (cart) {
-                let itemIndex = cart.products.findIndex(p => p.id === product.id);
+                let itemIndex = await cart.products.findIndex(p => p.proId === product.proId);
                 if (itemIndex > -1) {
                     reject({ message: 'Item already added' })
                 } else {
@@ -20,7 +17,7 @@ module.exports = {
                     resolve(cart);
                 }
             } else {
-                const newCart = await CartDb.create({ userId, product }).catch(err => {
+                const newCart = await CartDb.create({ userId: userId, products: product }).catch(err => {
                     reject({ message: 'Error creating cart' })
                 });
                 resolve(newCart);

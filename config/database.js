@@ -67,7 +67,7 @@ const CartSchema = mongoose.Schema({
         {
             pname: String,
             weight: String,
-            pcode: String,
+            proId: String,
             price: String,
             image: String,
             id: String,

@@ -69,6 +69,7 @@ router.get('/fetchcart', auth, (req, res) => {
 router.post('/addtocart', auth, (req, res) => {
   if (req.authenticated) {
     cartHelpers.addToCart(req.user.id, req.body).then((response) => {
+      console.log(response.products)
       res.send(response)
     }).catch(err => {
       res.send({ error: true, message: err.message })
