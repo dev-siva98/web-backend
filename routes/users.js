@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var productHelpers = require('../helpers/productHelpers');
+const express = require('express');
+const router = express.Router();
+const productHelpers = require('../helpers/productHelpers');
 const userHelpers = require('../helpers/userHelpers');
+const cartHelpers = require('../helpers/cartHelpers')
 const auth = require('./auth')
 
 
@@ -14,6 +15,8 @@ router.get('/auth', auth, (req, res) => {
   if (req.authenticated) {
     userHelpers.getUser(req.user.id).then(response => {
       res.send(response)
+    }).catch(err => {
+      res.send({ error: true, message: err.message })
     })
   } else {
     res.send({ error: true, message: 'Unauthorized' })
@@ -26,32 +29,36 @@ router.post('/signup', (req, res) => {
       res.send(response)
     } else {
       userHelpers.getUser(response.id).then(user => {
-        if (user.error) {
-          res.send({ error: true, message: user.message })
-        } else {
-          response.user = user
-          res.send(response)
-        }
+        response.user = user
+        res.send(response)
+      }).catch(err => {
+        res.send({ error: true, message: err.message })
       })
     }
+  }).catch(err => {
+    res.send({ error: true, message: err.message })
   })
 })
 
 router.post('/signin', (req, res) => {
   userHelpers.doSignin(req.body).then((response) => {
     res.send(response)
+  }).catch(err => {
+    res.send({ error: true, message: err.message })
   })
 })
 
 router.get('/products', (req, res) => {
   productHelpers.getAllProducts().then((response) => {
     res.send(response)
+  }).catch(err => {
+    res.send({ error: true.valueOf, message: err.message })
   })
 })
 
-router.post('/addtocart', auth, (req, res) => {
+router.get('/fetchcart', auth, (req, res) => {
   if (req.authenticated) {
-    userHelpers.addToCart(req.user.id, req.body).then((response) => {
+    cartHelpers.getCart(req.user.id).then(response => {
       res.send(response)
     })
   } else {
@@ -59,10 +66,24 @@ router.post('/addtocart', auth, (req, res) => {
   }
 })
 
-router.get('/fetchcart', auth, (req, res) => {
+router.post('/addtocart', auth, (req, res) => {
   if (req.authenticated) {
-    userHelpers.getCart(req.user.id).then(response => {
+    cartHelpers.addToCart(req.user.id, req.body).then((response) => {
       res.send(response)
+    }).catch(err => {
+      res.send({ error: true, message: err.message })
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
+router.get('/clearcart', auth, (req, res) => {
+  if (req.authenticated) {
+    cartHelpers.clearCart(req.user.id).then((response) => {
+      res.send(response)
+    }).catch(err => {
+      res.send({ error: true, message: err.message })
     })
   } else {
     res.send({ error: true, message: 'Unauthorized' })
