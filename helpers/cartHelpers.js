@@ -39,9 +39,14 @@ module.exports = {
         })
     },
 
-    removeFromCart: () => {
+    removeFromCart: (userId, product) => {
         return new Promise(async (resolve, reject) => {
-
+            let cart = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } } })
+            if (cart.acknowledged) {
+                resolve(cart)
+            } else {
+                reject({ message: 'Error deleting' })
+            }
         })
     },
 
