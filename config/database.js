@@ -25,7 +25,7 @@ const productSchema = mongoose.Schema({
         required: true
     },
     price: {
-        type: String,
+        type: Number,
         required: true
     },
     image: {
@@ -68,20 +68,33 @@ const CartSchema = mongoose.Schema({
             pname: String,
             weight: String,
             proId: String,
-            price: String,
+            price: Number,
             image: String,
             id: String,
             createdAt: Date,
             quantity: Number
         }
-    ]
+    ],
+    cartTotal: {
+        type: Number,
+        default: 0
+    }
 })
 
 const orderSchema = mongoose.Schema({
-    user: String,
-    total: String,
+    userId: String,
+    cartTotal: Number,
+    couponApplied: String,
+    discount: Number,
+    ship: Number,
+    total: Number,
     orderStatus: String,
-    items: Array,
+    address: {
+        line1: String,
+        line2: String,
+        pin: String,
+        contact: String
+    },
     id: {
         type: String,
         index: true,
@@ -105,4 +118,4 @@ const UsersDb = mongoose.model('user', userSchema)
 const CartDb = mongoose.model('cart', CartSchema)
 const OrderDb = mongoose.model('order', orderSchema)
 
-module.exports = { ProductsDb, UsersDb,CartDb, OrderDb }
+module.exports = { ProductsDb, UsersDb, CartDb, OrderDb }

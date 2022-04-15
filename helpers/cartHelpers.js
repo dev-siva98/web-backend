@@ -11,15 +11,17 @@ module.exports = {
                     reject({ message: 'Item already added' })
                 } else {
                     cart.products.push(product);
+                    cart.cartTotal = cart.cartTotal + product.price
                     cart = await cart.save().catch(err => {
                         reject({ message: 'Error saving cart' })
                     })
                     resolve(cart);
                 }
             } else {
-                const newCart = await CartDb.create({ userId: userId, products: product }).catch(err => {
+                const newCart = await CartDb.create({ userId: userId, products: product, cartTotal: product.price }).catch(err => {
                     reject({ message: 'Error creating cart' })
                 });
+
                 resolve(newCart);
             }
         })
@@ -32,17 +34,19 @@ module.exports = {
                     reject({ message: err.message })
                 })
             if (cart) {
-                resolve(cart.products)
+                resolve(cart)
             } else {
-                resolve([])
+                resolve({ cartTotal: 0, products: []})
             }
         })
     },
 
     removeFromCart: (userId, product) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } } })
+            let negative = product.quantity * product.price
+            let cart = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
             if (cart.acknowledged) {
+
                 resolve(cart)
             } else {
                 reject({ message: 'Error deleting' })
@@ -65,13 +69,13 @@ module.exports = {
     quantityIncrement: (userId, product) => {
         return new Promise(async (resolve, reject) => {
             let cart = await CartDb.findOne({ userId: userId }).exec()
-            if(cart) {
+            if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity++
                 cart = await cart.save()
                 resolve(cart)
             } else {
-                reject({ message: 'Cart not updated'})
+                reject({ message: 'Cart not updated' })
             }
         })
     },
@@ -79,13 +83,13 @@ module.exports = {
     quantityDecrement: (userId, product) => {
         return new Promise(async (resolve, reject) => {
             let cart = await CartDb.findOne({ userId: userId }).exec()
-            if(cart) {
+            if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity--
                 cart = await cart.save()
                 resolve(cart)
             } else {
-                reject({ message: 'Cart not updated'})
+                reject({ message: 'Cart not updated' })
             }
         })
     }
