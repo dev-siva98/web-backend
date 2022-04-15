@@ -60,6 +60,34 @@ module.exports = {
                 resolve({ message: 'Success' })
             }
         })
+    },
+
+    quantityIncrement: (userId, product) => {
+        return new Promise(async (resolve, reject) => {
+            let cart = await CartDb.findOne({ userId: userId }).exec()
+            if(cart) {
+                let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
+                cart.products[itemIndex].quantity++
+                cart = await cart.save()
+                resolve(cart)
+            } else {
+                reject({ message: 'Cart not updated'})
+            }
+        })
+    },
+
+    quantityDecrement: (userId, product) => {
+        return new Promise(async (resolve, reject) => {
+            let cart = await CartDb.findOne({ userId: userId }).exec()
+            if(cart) {
+                let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
+                cart.products[itemIndex].quantity--
+                cart = await cart.save()
+                resolve(cart)
+            } else {
+                reject({ message: 'Cart not updated'})
+            }
+        })
     }
 
 }

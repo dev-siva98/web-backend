@@ -69,7 +69,6 @@ router.get('/fetchcart', auth, (req, res) => {
 router.post('/addtocart', auth, (req, res) => {
   if (req.authenticated) {
     cartHelpers.addToCart(req.user.id, req.body).then((response) => {
-      console.log(response.products)
       res.send(response)
     }).catch(err => {
       res.send({ error: true, message: err.message })
@@ -100,6 +99,26 @@ router.delete('/removefromcart', auth, (req, res) => {
     })
   } else {
     res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
+router.post('/quantityincrement', auth, (req, res) => {
+  if (req.authenticated) {
+    cartHelpers.quantityIncrement(req.user.id, req.body).then(response => {
+      res.send(response)
+    }).catch(err => {
+      res.send({ error: true, message: err.message })
+    })
+  }
+})
+
+router.post('/quantitydecrement', auth, (req, res) => {
+  if (req.authenticated) {
+    cartHelpers.quantityDecrement(req.user.id, req.body).then(response => {
+      res.send(response)
+    }).catch(err => {
+      res.send({ error: true, message: err.message })
+    })
   }
 })
 
