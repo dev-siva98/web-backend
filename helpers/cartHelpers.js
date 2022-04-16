@@ -36,7 +36,7 @@ module.exports = {
             if (cart) {
                 resolve(cart)
             } else {
-                resolve({ cartTotal: 0, products: []})
+                resolve({ cartTotal: 0, products: [] })
             }
         })
     },
@@ -46,7 +46,6 @@ module.exports = {
             let negative = product.quantity * product.price
             let cart = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
             if (cart.acknowledged) {
-
                 resolve(cart)
             } else {
                 reject({ message: 'Error deleting' })
@@ -72,6 +71,7 @@ module.exports = {
             if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity++
+                cart.cartTotal = cart.cartTotal + product.price
                 cart = await cart.save()
                 resolve(cart)
             } else {
@@ -86,6 +86,7 @@ module.exports = {
             if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity--
+                cart.cartTotal = cart.cartTotal - product.price
                 cart = await cart.save()
                 resolve(cart)
             } else {

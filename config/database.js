@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-
-
 const productSchema = mongoose.Schema({
     pname: {
         type: String,
@@ -85,8 +83,14 @@ const orderSchema = mongoose.Schema({
     userId: String,
     cartTotal: Number,
     couponApplied: String,
-    discount: Number,
-    ship: Number,
+    discount: {
+        type: Number,
+        default: 0
+    },
+    shipping: {
+        type: Number,
+        default: 0
+    },
     total: Number,
     orderStatus: String,
     address: {
