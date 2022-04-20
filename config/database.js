@@ -76,13 +76,7 @@ const CartSchema = mongoose.Schema({
     cartTotal: {
         type: Number,
         default: 0
-    }
-})
-
-const orderSchema = mongoose.Schema({
-    userId: String,
-    cartTotal: Number,
-    couponApplied: String,
+    },
     discount: {
         type: Number,
         default: 0
@@ -91,6 +85,19 @@ const orderSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    total: {
+        type: Number,
+        default: 0
+    }
+    
+})
+
+const orderSchema = mongoose.Schema({
+    userId: String,
+    cartTotal: Number,
+    couponApplied: String,
+    discount: Number,
+    shipping: Number,
     total: Number,
     orderStatus: String,
     address: {

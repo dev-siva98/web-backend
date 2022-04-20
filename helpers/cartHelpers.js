@@ -12,13 +12,19 @@ module.exports = {
                 } else {
                     cart.products.push(product);
                     cart.cartTotal = cart.cartTotal + product.price
+                    if (cart.cartTotal >= 1000) {
+                        cart.shipping = 0
+                    } else {
+                        cart.shipping = 50
+                    }
+                    cart.total = cart.cartTotal + cart.shipping - cart.discount
                     cart = await cart.save().catch(err => {
                         reject({ message: 'Error saving cart' })
                     })
                     resolve(cart);
                 }
             } else {
-                const newCart = await CartDb.create({ userId: userId, products: product, cartTotal: product.price }).catch(err => {
+                const newCart = await CartDb.create({ userId: userId, products: product, cartTotal: product.price, shipping: 50, total: product.price + 50 }).catch(err => {
                     reject({ message: 'Error creating cart' })
                 });
 
@@ -36,7 +42,7 @@ module.exports = {
             if (cart) {
                 resolve(cart)
             } else {
-                resolve({ cartTotal: 0, products: [] })
+                resolve({ cartTotal: 0, shipping: 0, discount: 0, total: 0, products: [] })
             }
         })
     },
@@ -44,9 +50,19 @@ module.exports = {
     removeFromCart: (userId, product) => {
         return new Promise(async (resolve, reject) => {
             let negative = product.quantity * product.price
-            let cart = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
-            if (cart.acknowledged) {
-                resolve(cart)
+            let operation = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
+            if (operation.acknowledged) {
+                let cart = await CartDb.findOne({ userId: userId })
+                if (cart.cartTotal >= 1000) {
+                    cart.shipping = 0
+                } else {
+                    cart.shipping = 50
+                }
+                cart.total = cart.cartTotal + cart.shipping - cart.discount
+                cart = await cart.save().catch(err => {
+                    reject({ message: 'Error saving cart' })
+                })
+                resolve(operation)
             } else {
                 reject({ message: 'Error deleting' })
             }
@@ -72,6 +88,12 @@ module.exports = {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity++
                 cart.cartTotal = cart.cartTotal + product.price
+                if (cart.cartTotal >= 1000) {
+                    cart.shipping = 0
+                } else {
+                    cart.shipping = 50
+                }
+                cart.total = cart.cartTotal + cart.shipping - cart.discount
                 cart = await cart.save()
                 resolve(cart)
             } else {
@@ -87,6 +109,12 @@ module.exports = {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity--
                 cart.cartTotal = cart.cartTotal - product.price
+                if (cart.cartTotal >= 1000) {
+                    cart.shipping = 0
+                } else {
+                    cart.shipping = 50
+                }
+                cart.total = cart.cartTotal + cart.shipping - cart.discount
                 cart = await cart.save()
                 resolve(cart)
             } else {
