@@ -12,9 +12,8 @@ module.exports = {
                 } else {
                     cart.products.push(product);
                     cart.cartTotal = cart.cartTotal + product.price
-                    if (cart.cartTotal >= 1000) {
-                        cart.shipping = 0
-                    } else {
+                    cart.shipping = 0
+                    if (cart.cartTotal < 1000 && cart.cartTotal > 0) {
                         cart.shipping = 50
                     }
                     cart.total = cart.cartTotal + cart.shipping - cart.discount
@@ -53,9 +52,8 @@ module.exports = {
             let operation = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
             if (operation.acknowledged) {
                 let cart = await CartDb.findOne({ userId: userId })
-                if (cart.cartTotal >= 1000) {
-                    cart.shipping = 0
-                } else {
+                cart.shipping = 0
+                if (cart.cartTotal < 1000 && cart.cartTotal > 0) {
                     cart.shipping = 50
                 }
                 cart.total = cart.cartTotal + cart.shipping - cart.discount
@@ -88,9 +86,8 @@ module.exports = {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity++
                 cart.cartTotal = cart.cartTotal + product.price
-                if (cart.cartTotal >= 1000) {
-                    cart.shipping = 0
-                } else {
+                cart.shipping = 0
+                if (cart.cartTotal < 1000 && cart.cartTotal > 0) {
                     cart.shipping = 50
                 }
                 cart.total = cart.cartTotal + cart.shipping - cart.discount
@@ -109,9 +106,8 @@ module.exports = {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity--
                 cart.cartTotal = cart.cartTotal - product.price
-                if (cart.cartTotal >= 1000) {
-                    cart.shipping = 0
-                } else {
+                cart.shipping = 0
+                if (cart.cartTotal < 1000 && cart.cartTotal > 0) {
                     cart.shipping = 50
                 }
                 cart.total = cart.cartTotal + cart.shipping - cart.discount
