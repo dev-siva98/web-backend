@@ -1,4 +1,4 @@
-var {OrderDb} =require('../config/database')
+var { OrderDb } = require('../config/database')
 
 module.exports = {
 
@@ -10,20 +10,31 @@ module.exports = {
                 resolve({ orders, count })
             }
             else {
-                resolve({status:true, message: err.toString()})
+                resolve({ status: true, message: err.toString() })
             }
         })
     },
 
-    addOrder: (details) => {
-        // details.id = details.id
+    createOrder: (userId, order) => {
+        var ds = (new Date()).getTime().toString()
+        order.userId = userId
+        if (order.paymentMode === 'cod') {
+            order.orderStatus = 'Placed'
+            order.orderId = 'MCPC' + ds
+            order.paymentStatus = 'cod'
+        } else {
+            order.orderStatus = 'Pending'
+            order.orderId = 'MCPP' + ds
+            order.paymentStatus = 'Pending'
+        }
+        order.id = order.orderId
         return new Promise((resolve, reject) => {
-            OrderDb.create(details, (err, data) => {
+            OrderDb.create(order, (err, data) => {
                 if (err) {
-                    resolve({ status: true, message: err.toString() })
+                    reject({ status: true, message: 'Error creating order' })
                 }
                 else {
-                    resolve(details)
+                    resolve(data)
                 }
             })
         })

@@ -50,7 +50,9 @@ const userSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata'
+        })
     }
 })
 
@@ -88,24 +90,49 @@ const CartSchema = mongoose.Schema({
     total: {
         type: Number,
         default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata'
+        })
     }
-    
+
 })
 
 const orderSchema = mongoose.Schema({
     userId: String,
+    userName: String,
+    mobile: String,
+    orderId: String,
     cartTotal: Number,
     couponApplied: String,
     discount: Number,
     shipping: Number,
     total: Number,
+    paymentMode: String,
     orderStatus: String,
+    paymentStatus: String,
+    write: String,
     address: {
-        line1: String,
-        line2: String,
+        address1: String,
+        address2: String,
+        landmark: String,
         pin: String,
         contact: String
     },
+    products: [
+        {
+            pname: String,
+            weight: String,
+            proId: String,
+            price: Number,
+            image: String,
+            id: String,
+            createdAt: Date,
+            quantity: Number
+        }
+    ],
     id: {
         type: String,
         index: true,

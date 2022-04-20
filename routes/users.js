@@ -3,7 +3,8 @@ const router = express.Router();
 const productHelpers = require('../helpers/productHelpers');
 const userHelpers = require('../helpers/userHelpers');
 const cartHelpers = require('../helpers/cartHelpers')
-const auth = require('./auth')
+const auth = require('./auth');
+const orderHelpers = require('../helpers/orderHelpers');
 
 
 router.get('/', (req, res) => {
@@ -57,6 +58,7 @@ router.get('/products', (req, res) => {
 })
 
 router.get('/fetchcart', auth, (req, res) => {
+  // var ds = (new Date()).toISOString().replace(/[^0-9]/g, "");
   if (req.authenticated) {
     cartHelpers.getCart(req.user.id).then(response => {
       res.send(response)
@@ -119,6 +121,16 @@ router.post('/quantitydecrement', auth, (req, res) => {
     }).catch(err => {
       res.send({ error: true, message: err.message })
     })
+  }
+})
+
+router.post('/checkout', auth, (req, res) => {
+  if (req.authenticated) {
+    orderHelpers.createOrder(req.user.id, req.body).then(response => {
+      res.send(response)
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
   }
 })
 
