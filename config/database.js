@@ -114,6 +114,7 @@ const orderSchema = mongoose.Schema({
     orderStatus: String,
     paymentStatus: String,
     write: String,
+    delivery: Date,
     address: {
         address1: String,
         address2: String,
