@@ -32,9 +32,7 @@ const productSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata'
-        })
+        default: Date.now()
     }
 })
 
@@ -50,9 +48,7 @@ const userSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata'
-        })
+        default: Date.now()
     }
 })
 
@@ -93,9 +89,7 @@ const CartSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata'
-        })
+        default: Date.now()
     }
 
 })
@@ -115,6 +109,9 @@ const orderSchema = mongoose.Schema({
     paymentStatus: String,
     write: String,
     delivery: Date,
+    razorpay_payment_id: String,
+    razorpay_order_id: String,
+    razorpay_signature: String,
     address: {
         address1: String,
         address2: String,
@@ -142,9 +139,7 @@ const orderSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata'
-        })
+        default: Date.now()
     }
 })
 

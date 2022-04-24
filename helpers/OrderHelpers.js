@@ -1,4 +1,11 @@
-var { OrderDb } = require('../config/database')
+const { OrderDb } = require('../config/database')
+const Razorpay = require('razorpay')
+const crypto = require('crypto')
+require('dotenv').config()
+
+
+var instance = new Razorpay({ key_id: process.env.RZP_KEY_ID, key_secret: process.env.RZP_KEY_SECRET })
+
 
 module.exports = {
 
@@ -39,5 +46,72 @@ module.exports = {
             })
         })
     },
+
+    doPayment: (order) => {
+        return new Promise((resolve, reject) => {
+            instance.orders.create({
+                amount: order.total * 100,
+                currency: "INR",
+                receipt: order.orderId,
+            }).then(res => {
+                resolve(res)
+            }).catch(err => {
+                console.log('Error inside ', err)
+            })
+        })
+    },
+
+    verifyPayment: ({ payment, order }) => {
+        return new Promise(async (resolve, reject) => {
+            let fetch = await OrderDb.findOne({ orderId: order.receipt })
+            if (fetch) {
+                fetch.razorpay_payment_id = payment.razorpay_payment_id
+                fetch.razorpay_order_id = payment.razorpay_order_id
+                fetch.razorpay_signature = payment.razorpay_signature
+                fetch = await fetch.save()
+                const hmac = crypto.createHmac('sha256', process.env.RZP_KEY_SECRET).update(fetch.razorpay_order_id + '|' + fetch.razorpay_payment_id).digest('hex')
+                if (hmac === fetch.razorpay_signature) {
+                    fetch.paymentStatus = 'Success'
+                    fetch.orderStatus = 'Placed'
+                    fetch = await fetch.save()
+                    resolve(fetch)
+                } else {
+                    fetch.paymentStatus = 'Failed'
+                    fetch = await fetch.save()
+                    resolve(fetch)
+                }
+            } else {
+                reject({ error: true, message: 'Order fetch error' })
+            }
+        })
+    },
+
+    failedPayment: ({ error, order }) => {
+        return new Promise(async (resolve, reject) => {
+            let fetch = await OrderDb.findOne({ orderId: order.receipt })
+            if (fetch) {
+                console.log('heyyy')
+
+                fetch.razorpay_payment_id = error.metadata.razorpay_payment_id
+                fetch.razorpay_order_id = error.metadata.razorpay_order_id
+                fetch.paymentStatus = 'Failed'
+                fetch = await fetch.save()
+                resolve(fetch)
+            } else {
+                reject({ error: true, message: 'Order fetch error' })
+            }
+        })
+    },
+
+    capturePayment: ({ paymentId, order }) => {
+        return new Promise((resolve, reject) => {
+            instance.payments.capture(paymentId, order.amount, order.currency).then(res => {
+                console.log(res)
+                resolve(res)
+            }).catch(err => {
+                console.log(err)
+            })
+        })
+    }
 
 }

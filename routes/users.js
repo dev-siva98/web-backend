@@ -127,7 +127,50 @@ router.post('/quantitydecrement', auth, (req, res) => {
 router.post('/checkout', auth, (req, res) => {
   if (req.authenticated) {
     orderHelpers.createOrder(req.user.id, req.body).then(response => {
-      res.send(response)
+      if (req.body.paymentMode == 'online') {
+        orderHelpers.doPayment(response).then(details => {
+          res.send(details)
+        })
+      } else {
+        res.send(response)
+      }
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
+router.post('/verifypayment', auth, (req, res) => {
+  console.log(req.body)
+  if (req.authenticated) {
+    orderHelpers.verifyPayment(req.body).then(response => {
+      res.status(200).send(response)
+    }).catch(err => {
+      res.status(500).send({ error: err, message: 'Database Error' })
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
+router.post('/failedtransaction', auth, (req, res) => {
+  if (req.authenticated) {
+    orderHelpers.failedPayment(req.body).then(response => {
+      res.status(200).send(response)
+    }).catch(err => {
+      res.status(500).send({ error: err, message: 'Database Error' })
+    })
+  } else {
+    res.send({ error: true, message: 'Unauthorized' })
+  }
+})
+
+router.post('/capturepayment', auth, (req, res) => {
+  if (req.authenticated) {
+    orderHelpers.capturePayment(req.body).then(response => {
+      res.send(res)
+    }).catch(err => {
+      console.log(err)
     })
   } else {
     res.send({ error: true, message: 'Unauthorized' })
