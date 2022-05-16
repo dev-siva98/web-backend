@@ -64,7 +64,7 @@ router.get('/fetchcart', auth, (req, res) => {
       res.send(response)
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -76,7 +76,7 @@ router.post('/addtocart', auth, (req, res) => {
       res.send({ error: true, message: err.message })
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -88,7 +88,7 @@ router.get('/clearcart', auth, (req, res) => {
       res.send({ error: true, message: err.message })
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -100,7 +100,7 @@ router.delete('/removefromcart', auth, (req, res) => {
       res.send({ error: true, message: err.message })
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -136,7 +136,7 @@ router.post('/checkout', auth, (req, res) => {
       }
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -149,7 +149,7 @@ router.post('/verifypayment', auth, (req, res) => {
       res.status(500).send({ error: err, message: 'Database Error' })
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -161,7 +161,7 @@ router.post('/failedtransaction', auth, (req, res) => {
       res.status(500).send({ error: err, message: 'Database Error' })
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 
@@ -173,7 +173,7 @@ router.post('/capturepayment', auth, (req, res) => {
       console.log(err)
     })
   } else {
-    res.send({ error: true, message: 'Unauthorized' })
+    res.send({ error: true, message: 'Please Login' })
   }
 })
 

@@ -32,7 +32,7 @@ const productSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 })
 
@@ -48,7 +48,7 @@ const userSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 })
 
@@ -89,7 +89,7 @@ const CartSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 
 })
@@ -139,7 +139,7 @@ const orderSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 })
 
