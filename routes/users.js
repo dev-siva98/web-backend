@@ -168,7 +168,19 @@ router.post('/failedtransaction', auth, (req, res) => {
 router.post('/capturepayment', auth, (req, res) => {
   if (req.authenticated) {
     orderHelpers.capturePayment(req.body).then(response => {
-      res.send(res)
+      res.send(response)
+    }).catch(err => {
+      console.log(err)
+    })
+  } else {
+    res.send({ error: true, message: 'Please Login' })
+  }
+})
+
+router.get('/getorder', auth, (req, res) => {
+  if (req.authenticated) {
+    orderHelpers.getOrder(req.user.id).then(response => {
+      res.send(response)
     }).catch(err => {
       console.log(err)
     })

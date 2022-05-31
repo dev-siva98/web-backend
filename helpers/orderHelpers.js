@@ -112,6 +112,17 @@ module.exports = {
                 console.log(err)
             })
         })
+    },
+
+    getOrder: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let order = await OrderDb.find({userId: userId})
+            if(order) {
+                resolve(order)
+            } else {
+                reject({ error: true, message: 'Order fetch error' })
+            }
+        })
     }
 
 }
