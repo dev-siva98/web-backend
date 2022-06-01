@@ -94,6 +94,7 @@ router.get('/clearcart', auth, (req, res) => {
 
 router.delete('/removefromcart', auth, (req, res) => {
   if (req.authenticated) {
+    console.log(req.body)
     cartHelpers.removeFromCart(req.user.id, req.body).then((response) => {
       res.send(response)
     }).catch(err => {

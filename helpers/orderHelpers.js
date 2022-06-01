@@ -116,7 +116,7 @@ module.exports = {
 
     getOrder: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let order = await OrderDb.find({userId: userId})
+            let order = await OrderDb.find({userId: userId}).sort({createdAt: '-1'})
             if(order) {
                 resolve(order)
             } else {
