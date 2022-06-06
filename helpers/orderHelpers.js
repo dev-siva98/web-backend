@@ -9,15 +9,14 @@ var instance = new Razorpay({ key_id: process.env.RZP_KEY_ID, key_secret: proces
 
 module.exports = {
 
-    getAllOrders: (start, limit, field, sortOrder) => {
+    getAllOrders: () => {
         return new Promise(async (resolve, reject) => {
-            let orders = await OrderDb.find().limit(limit).skip(start).sort({ [field]: sortOrder }).exec()
+            let orders = await OrderDb.find()
             if (orders) {
-                let count = await OrderDb.countDocuments()
-                resolve({ orders, count })
+                resolve(orders)
             }
             else {
-                resolve({ status: true, message: err.toString() })
+                reject({ status: true, message: err.message })
             }
         })
     },
