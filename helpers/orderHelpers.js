@@ -122,6 +122,19 @@ module.exports = {
                 reject({ error: true, message: 'Order fetch error' })
             }
         })
+    },
+
+    changeOrderStatus: ({orderId, value}) => {
+        return new Promise( async (resolve, reject) => {
+            let order = await OrderDb.findOne({orderId: orderId})
+            if(order) {
+                order.orderStatus = value
+                order.save()
+                resolve()
+            } else {
+                reject({error: true, message: 'Order fetch error'})
+            }
+        })
     }
 
 }

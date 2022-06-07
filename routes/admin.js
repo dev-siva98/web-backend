@@ -29,4 +29,12 @@ router.get('/getorders', (req, res) => {
   })
 })
 
+router.post('/changeorderstatus', (req, res) => {
+  orderHelpers.changeOrderStatus(req.body).then(() => {
+    res.status(201).send()
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
 module.exports = router;
