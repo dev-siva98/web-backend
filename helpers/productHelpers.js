@@ -4,7 +4,7 @@ module.exports = {
 
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            let products = await ProductsDb.find().exec()
+            let products = await ProductsDb.find()
             if (products) {
                 resolve(products)
             } else {

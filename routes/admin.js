@@ -21,7 +21,7 @@ router.post('/addproduct', (req, res) => {
   })
 })
 
-router.get('/getorders', (req, res) => {
+router.get('/orders', (req, res) => {
   orderHelpers.getAllOrders().then(response => {
     res.send(response)
   }).catch(err => {
@@ -34,6 +34,22 @@ router.post('/changeorderstatus', (req, res) => {
     res.status(201).send()
   }).catch(err => {
     res.status(500).send(err)
+  })
+})
+
+router.get('/products', (req, res) => {
+  productHelpers.getAllProducts().then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
+router.get('/customers', (req, res) => {
+  userHelpers.getAllUsers().then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send()
   })
 })
 

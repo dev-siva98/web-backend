@@ -142,4 +142,16 @@ module.exports = {
         })
     },
 
+    getAllUsers : () => {
+        return new Promise(async(resolve, reject) => {
+            let users = await UsersDb.find()
+            if(users) {
+                users.cartLength = users.cart.length()
+                resolve(users)
+            } else {
+                reject({error: true, message: 'Database error'})
+            }
+        })
+    }
+
 }
