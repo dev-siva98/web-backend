@@ -8,9 +8,9 @@ module.exports = {
 
     getUser: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let user = await UsersDb.find({ id: userId }, { password: 0 }).exec()
+            let user = await UsersDb.findOne({ id: userId }, { password: 0 }).exec()
             if (user) {
-                resolve(user[0])
+                resolve(user)
             } else {
                 reject({ message: 'Login to continue' })
             }
@@ -142,14 +142,13 @@ module.exports = {
         })
     },
 
-    getAllUsers : () => {
-        return new Promise(async(resolve, reject) => {
-            let users = await UsersDb.find()
-            if(users) {
-                users.cartLength = users.cart.length()
+    getAllUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            let users = await UsersDb.find({}, { password: 0 }).exec()
+            if (users) {
                 resolve(users)
             } else {
-                reject({error: true, message: 'Database error'})
+                reject({ error: true, message: 'Database error' })
             }
         })
     }

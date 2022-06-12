@@ -28,11 +28,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-mongoose.connect(process.env.MONGO_URL).then(() => {
+
+//database connection
+
+mongoose.connect(process.env.MONGO_URL_LOCAL).then(() => {
   console.log('Database Connected');
 }).catch((err) => {
   console.log("Database Connection Error - " + err);
 })
+
 app.use(session({
   secret: "key",
   cookie: { maxAge: 6000000 },

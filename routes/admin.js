@@ -49,7 +49,7 @@ router.get('/customers', (req, res) => {
   userHelpers.getAllUsers().then(response => {
     res.send(response)
   }).catch(err => {
-    res.status(500).send()
+    res.status(500).send(err)
   })
 })
 
