@@ -53,4 +53,13 @@ router.get('/customers', (req, res) => {
   })
 })
 
+router.get('/getproduct/:id', (req, res) => {
+  console.log(req.params.id)
+  productHelpers.getProduct(req.params.id).then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
 module.exports = router;

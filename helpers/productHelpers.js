@@ -8,7 +8,7 @@ module.exports = {
             if (products) {
                 resolve(products)
             } else {
-                reject({message: 'Empty'})
+                reject({ message: 'Empty' })
             }
         })
     },
@@ -30,15 +30,14 @@ module.exports = {
     },
 
     getProduct: (proId) => {
-        return new Promise((resolve, reject) => {
-            ProductsDb.find({ id: proId }, (err, data) => {
-                if (err) {
-                    resolve({ error: true, message: err.toString() })
-                }
-                else {
-                    resolve(data[0])
-                }
-            })
+        return new Promise(async (resolve, reject) => {
+            let product = await ProductsDb.findOne({ proId: proId })
+            if (product) {
+                resolve(product)
+            }
+            else {
+                reject({ error: true, message: 'Not found' })
+            }
         })
     },
 
@@ -46,7 +45,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             ProductsDb.deleteOne({ id: proId }, (err, data) => {
                 if (err) {
-                    resolve({ error: true, message: err.toString() })
+                    reject({ error: true, message: err.toString() })
                 }
                 else {
                     resolve({ id: proId })
