@@ -45,7 +45,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             ProductsDb.deleteOne({ id: proId }, (err, data) => {
                 if (err) {
-                    reject({ error: true, message: err.toString() })
+                    reject({ error: true, message: 'Error deleting product' })
                 }
                 else {
                     resolve({ id: proId })

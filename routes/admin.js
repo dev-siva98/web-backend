@@ -62,4 +62,21 @@ router.get('/getproduct/:id', (req, res) => {
   })
 })
 
+router.post('/editproduct/:id', (req, res) => {
+  productHelpers.updateProduct(req.params.id, req.body).then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
+router.delete('/deleteproduct/:id', (req, res) => {
+  console.log(req.params.id)
+  productHelpers.deleteProduct(req.params.id).then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
 module.exports = router;
