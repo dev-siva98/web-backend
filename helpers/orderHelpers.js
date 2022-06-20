@@ -129,19 +129,33 @@ module.exports = {
         })
     },
 
-    changeOrderStatus: ({ orderId, value }) => {
+    changeOrderStatus: ({ orderId, value, checked }) => {
         return new Promise(async (resolve, reject) => {
             let order = await OrdersDb.findOne({ orderId: orderId })
             if (order) {
                 order.orderStatus = value
-                order.save()
-                if (value === 'Delivered' && order.paymentMode === 'cod') {
+
+                //increment total amount when cod order delivered
+
+                if (checked && order.paymentMode === 'cod') {
                     await AdminDb.findOneAndUpdate(
                         { adminId: 'admin' },
                         {
                             $inc: { cod: order.total, total: order.total }
                         })
                 }
+
+                //decrement total amount when cod order status changed back from delivered to any other only once
+
+                else if (!checked && order.paymentMode === 'cod' && order.deliveryStatus) {
+                    await AdminDb.findOneAndUpdate(
+                        { adminId: 'admin' },
+                        {
+                            $inc: { cod: -order.total, total: -order.total }
+                        })
+                }
+                order.deliveryStatus = checked //change delieveryStatus true or false as per the checked variable
+                order.save()
                 resolve()
             } else {
                 reject({ error: true, message: 'Order fetch error' })

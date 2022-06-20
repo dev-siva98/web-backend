@@ -112,6 +112,10 @@ const orderSchema = mongoose.Schema({
     razorpay_payment_id: String,
     razorpay_order_id: String,
     razorpay_signature: String,
+    deliveryStatus: {
+        type: Boolean,
+        default: false
+    },
     address: {
         address1: String,
         address2: String,
