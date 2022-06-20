@@ -1,4 +1,4 @@
-var { UsersDb } = require('../config/database')
+var { UsersDb, AdminDb } = require('../config/database')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -29,67 +29,6 @@ module.exports = {
             })
         })
     },
-
-    // sampleSignup: (userDetails) => {
-    //     return new Promise(async (resolve, reject) => {
-
-    //         userDetails.id = userDetails.mobile
-
-    //         bcrypt.hash(userDetails.password, 10, (err, hash) => {
-    //             if (err) {
-    //                 resolve({ error: true, message: 'Problem with password' })
-    //             } else {
-    //                 userDetails.password = hash
-    //                 UsersDb.create(userDetails, (err, data) => {
-    //                     if (err) {
-    //                         resolve({ error: true, message: 'User already exist' })
-    //                     }
-    //                     else {
-    //                         const accessToken = jwt.sign({ id: data.id },
-    //                             process.env.ACCESS_TOKEN_SECRET,
-    //                             { expiresIn: 3600 }
-    //                         )
-    //                         resolve({ id: data.id, accessToken })
-    //                     }
-    //                 })
-    //             }
-    //         });
-    //     })
-    // },
-
-    // sampleSignup: (userDetails) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         userDetails.id = userDetails.mobile
-    //         try {
-    //             let user = await UsersDb.findOne({ id: userDetails.id }).exec()
-    //             if (user) {
-    //                 throw ({ message: 'User already exist' })
-    //             } else {
-    //                 bcrypt.hash(userDetails.password, 10, (err, hash) => {
-    //                     if (err) {
-    //                         throw ({ message: 'Problem with password' })
-    //                     } else {
-    //                         userDetails.password = hash
-
-    //                         UsersDb.create(userDetails, (err, data) => {
-    //                             if (err) {
-    //                                 throw ({ message: err.message })
-    //                             } else {
-    //                                 const accessToken = jwt.sign({ id: data.id },
-    //                                     process.env.ACCESS_TOKEN_SECRET,
-    //                                     { expiresIn: 3600 }
-    //                                 )
-    //                                 resolve({ id: data.id, accessToken })
-    //                             }
-    //                         })
-    //                     }
-    //                 })
-    //             }
-    //         } catch (err) {
-    //             resolve({ error: true, message: err })
-    //         }
-    //     })
-    // },
 
     doSignup: (userDetails) => {
         return new Promise(async (resolve, reject) => {
@@ -150,6 +89,13 @@ module.exports = {
             } else {
                 reject({ error: true, message: 'Database error' })
             }
+        })
+    },
+    getAdminData: () => {
+        return new Promise(async (resolve, reject) => {
+            let admin = await AdminDb.findOne({ adminId: 'admin' })
+            if (admin) resolve(admin)
+            else reject({ error: true, message: 'database error' })
         })
     }
 

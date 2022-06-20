@@ -73,7 +73,11 @@ module.exports = {
                     fetch.paymentStatus = 'Success'
                     fetch.orderStatus = 'Placed'
                     fetch = await fetch.save()
-                    let admin = await AdminDb.findOneAndUpdate({ adminId: 'admin' }, { $inc: { online: fetch.total }, $inc: { total: fetch.total } })
+                    let admin = await AdminDb.findOneAndUpdate(
+                        { adminId: 'admin' },
+                        {
+                            $inc: { online: fetch.total, total: fetch.total }
+                        })
                     resolve(fetch)
                 } else {
                     fetch.paymentStatus = 'Failed'
@@ -135,8 +139,7 @@ module.exports = {
                     await AdminDb.findOneAndUpdate(
                         { adminId: 'admin' },
                         {
-                            $inc: { cod: order.total },
-                            $inc: { total: order.total }
+                            $inc: { cod: order.total, total: order.total }
                         })
                 }
                 resolve()

@@ -79,4 +79,12 @@ router.delete('/deleteproduct/:id', (req, res) => {
   })
 })
 
+router.get('/dashboard', (req, res) => {
+  userHelpers.getAdminData().then(response => {
+    res.send(response)
+  }).catch(err => {
+    res.status(500).send(err)
+  })
+})
+
 module.exports = router;
