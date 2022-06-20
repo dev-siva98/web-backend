@@ -1,4 +1,4 @@
-const { OrderDb } = require('../config/database')
+const { OrdersDb, AdminDb } = require('../config/database')
 const Razorpay = require('razorpay')
 const crypto = require('crypto')
 require('dotenv').config()
@@ -11,7 +11,7 @@ module.exports = {
 
     getAllOrders: () => {
         return new Promise(async (resolve, reject) => {
-            let orders = await OrderDb.find()
+            let orders = await OrdersDb.find()
             if (orders) {
                 resolve(orders)
             }
@@ -35,7 +35,7 @@ module.exports = {
         }
         order.id = order.orderId
         return new Promise((resolve, reject) => {
-            OrderDb.create(order, (err, data) => {
+            OrdersDb.create(order, (err, data) => {
                 if (err) {
                     reject({ status: true, message: 'Error creating order' })
                 }
@@ -62,7 +62,7 @@ module.exports = {
 
     verifyPayment: ({ payment, order }) => {
         return new Promise(async (resolve, reject) => {
-            let fetch = await OrderDb.findOne({ orderId: order.receipt })
+            let fetch = await OrdersDb.findOne({ orderId: order.receipt })
             if (fetch) {
                 fetch.razorpay_payment_id = payment.razorpay_payment_id
                 fetch.razorpay_order_id = payment.razorpay_order_id
@@ -73,6 +73,7 @@ module.exports = {
                     fetch.paymentStatus = 'Success'
                     fetch.orderStatus = 'Placed'
                     fetch = await fetch.save()
+                    let admin = await AdminDb.findOneAndUpdate({ adminId: 'admin' }, { $inc: { online: fetch.total }, $inc: { total: fetch.total } })
                     resolve(fetch)
                 } else {
                     fetch.paymentStatus = 'Failed'
@@ -87,7 +88,7 @@ module.exports = {
 
     failedPayment: ({ error, order }) => {
         return new Promise(async (resolve, reject) => {
-            let fetch = await OrderDb.findOne({ orderId: order.receipt })
+            let fetch = await OrdersDb.findOne({ orderId: order.receipt })
             if (fetch) {
                 console.log('heyyy')
 
@@ -115,8 +116,8 @@ module.exports = {
 
     getOrder: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let order = await OrderDb.find({userId: userId}).sort({createdAt: '-1'})
-            if(order) {
+            let order = await OrdersDb.find({ userId: userId }).sort({ createdAt: '-1' })
+            if (order) {
                 resolve(order)
             } else {
                 reject({ error: true, message: 'Order fetch error' })
@@ -124,15 +125,23 @@ module.exports = {
         })
     },
 
-    changeOrderStatus: ({orderId, value}) => {
-        return new Promise( async (resolve, reject) => {
-            let order = await OrderDb.findOne({orderId: orderId})
-            if(order) {
+    changeOrderStatus: ({ orderId, value }) => {
+        return new Promise(async (resolve, reject) => {
+            let order = await OrdersDb.findOne({ orderId: orderId })
+            if (order) {
                 order.orderStatus = value
                 order.save()
+                if (value === 'Delivered' && order.paymentMode === 'cod') {
+                    await AdminDb.findOneAndUpdate(
+                        { adminId: 'admin' },
+                        {
+                            $inc: { cod: order.total },
+                            $inc: { total: order.total }
+                        })
+                }
                 resolve()
             } else {
-                reject({error: true, message: 'Order fetch error'})
+                reject({ error: true, message: 'Order fetch error' })
             }
         })
     }

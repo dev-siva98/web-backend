@@ -143,13 +143,33 @@ const orderSchema = mongoose.Schema({
     }
 })
 
+const adminSchema = mongoose.Schema({
+    adminId: {
+        type: String,
+        default: 'admin'
+    },
+    online: {
+        type: Number,
+        default: 0
+    },
+    cod: {
+        type: Number,
+        default: 0
+    },
+    total: {
+        type: Number,
+        default: 0
+    }
+})
+
 
 
 productSchema.plugin(uniqueValidator)
 
 const ProductsDb = mongoose.model('product', productSchema)
 const UsersDb = mongoose.model('user', userSchema)
-const CartDb = mongoose.model('cart', CartSchema)
-const OrderDb = mongoose.model('order', orderSchema)
+const CartsDb = mongoose.model('cart', CartSchema)
+const OrdersDb = mongoose.model('order', orderSchema)
+const AdminDb = mongoose.model('admin', adminSchema)
 
-module.exports = { ProductsDb, UsersDb, CartDb, OrderDb }
+module.exports = { ProductsDb, UsersDb, CartsDb, OrdersDb, AdminDb }

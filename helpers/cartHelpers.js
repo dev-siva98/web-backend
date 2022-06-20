@@ -1,10 +1,10 @@
-var { CartDb } = require('../config/database')
+var { CartsDb } = require('../config/database')
 
 module.exports = {
 
     addToCart: async (userId, product) => {
         return await new Promise(async (resolve, reject) => {
-            let cart = await CartDb.findOne({ userId: userId })
+            let cart = await CartsDb.findOne({ userId: userId })
             if (cart) {
                 let itemIndex = await cart.products.findIndex(p => p.proId === product.proId);
                 if (itemIndex > -1) {
@@ -23,7 +23,7 @@ module.exports = {
                     resolve(cart);
                 }
             } else {
-                const newCart = await CartDb.create({ userId: userId, products: product, cartTotal: product.price, shipping: 50, total: product.price + 50 }).catch(err => {
+                const newCart = await CartsDb.create({ userId: userId, products: product, cartTotal: product.price, shipping: 50, total: product.price + 50 }).catch(err => {
                     reject({ message: 'Error creating cart' })
                 });
 
@@ -34,7 +34,7 @@ module.exports = {
 
     getCart: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await CartDb.findOne({ userId: userId }).exec()
+            let cart = await CartsDb.findOne({ userId: userId }).exec()
                 .catch(err => {
                     reject({ message: err.message })
                 })
@@ -49,9 +49,9 @@ module.exports = {
     removeFromCart: (userId, product) => {
         return new Promise(async (resolve, reject) => {
             let negative = product.quantity * product.price
-            let operation = await CartDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
+            let operation = await CartsDb.updateOne({ userId: userId }, { $pull: { products: { proId: product.proId } }, $inc: { cartTotal: -negative } })
             if (operation.acknowledged) {
-                let cart = await CartDb.findOne({ userId: userId })
+                let cart = await CartsDb.findOne({ userId: userId })
                 cart.shipping = 0
                 if (cart.cartTotal < 1000 && cart.cartTotal > 0) {
                     cart.shipping = 50
@@ -69,7 +69,7 @@ module.exports = {
 
     clearCart: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let data = await CartDb.deleteMany({ userId: userId }).exec()
+            let data = await CartsDb.deleteMany({ userId: userId }).exec()
                 .catch(err => {
                     reject({ message: 'Database error' + err })
                 })
@@ -81,7 +81,7 @@ module.exports = {
 
     quantityIncrement: (userId, product) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await CartDb.findOne({ userId: userId }).exec()
+            let cart = await CartsDb.findOne({ userId: userId }).exec()
             if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity++
@@ -101,7 +101,7 @@ module.exports = {
 
     quantityDecrement: (userId, product) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await CartDb.findOne({ userId: userId }).exec()
+            let cart = await CartsDb.findOne({ userId: userId }).exec()
             if (cart) {
                 let itemIndex = await cart.products.findIndex(item => item.proId === product.proId)
                 cart.products[itemIndex].quantity--
