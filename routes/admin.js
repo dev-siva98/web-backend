@@ -80,8 +80,12 @@ router.delete('/deleteproduct/:id', (req, res) => {
 })
 
 router.get('/dashboard', (req, res) => {
-  userHelpers.getAdminData().then(response => {
-    res.send(response)
+  userHelpers.getAdminData().then(dashboard => {
+    orderHelpers.getAllOrders().then(orders => {
+      res.send({ dashboard: dashboard, orders: orders })
+    }).catch(err => {
+      throw ({ error: true, message: 'Database Error' })
+    })
   }).catch(err => {
     res.status(500).send(err)
   })
