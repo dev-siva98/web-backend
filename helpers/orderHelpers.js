@@ -25,13 +25,13 @@ module.exports = {
         var ds = (new Date()).getTime().toString()
         order.userId = userId
         if (order.paymentMode === 'cod') {
-            order.orderStatus = 'Placed'
+            order.orderStatus = 'placed'
             order.orderId = 'MCPC' + ds
             order.paymentStatus = 'cod'
         } else {
-            order.orderStatus = 'Pending'
+            order.orderStatus = 'pending'
             order.orderId = 'MCPP' + ds
-            order.paymentStatus = 'Pending'
+            order.paymentStatus = 'pending'
         }
         order.id = order.orderId
         return new Promise((resolve, reject) => {
@@ -70,8 +70,8 @@ module.exports = {
                 fetch = await fetch.save()
                 const hmac = crypto.createHmac('sha256', process.env.RZP_KEY_SECRET).update(fetch.razorpay_order_id + '|' + fetch.razorpay_payment_id).digest('hex')
                 if (hmac === fetch.razorpay_signature) {
-                    fetch.paymentStatus = 'Success'
-                    fetch.orderStatus = 'Placed'
+                    fetch.paymentStatus = 'success'
+                    fetch.orderStatus = 'placed'
                     fetch = await fetch.save()
                     let admin = await AdminDb.findOneAndUpdate(
                         { adminId: 'admin' },
@@ -80,7 +80,7 @@ module.exports = {
                         })
                     resolve(fetch)
                 } else {
-                    fetch.paymentStatus = 'Failed'
+                    fetch.paymentStatus = 'failed'
                     fetch = await fetch.save()
                     resolve(fetch)
                 }
@@ -94,11 +94,9 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let fetch = await OrdersDb.findOne({ orderId: order.receipt })
             if (fetch) {
-                console.log('heyyy')
-
                 fetch.razorpay_payment_id = error.metadata.razorpay_payment_id
                 fetch.razorpay_order_id = error.metadata.razorpay_order_id
-                fetch.paymentStatus = 'Failed'
+                fetch.paymentStatus = 'failed'
                 fetch = await fetch.save()
                 resolve(fetch)
             } else {
