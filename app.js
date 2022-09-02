@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //database connection
 
-mongoose.connect(process.env.MONGO_URL_LOCAL).then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log('Database Connected');
 }).catch((err) => {
   console.log("Database Connection Error - " + err);
