@@ -1,66 +1,90 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var mongoose = require('mongoose')
+#!/usr/bin/env node
 
-var cors = require('cors');
-var logger = require('morgan');
+/**
+ * Module dependencies.
+ */
 
+var app = require('./app');
+var debug = require('debug')('web-backend:server');
+var http = require('http');
 
-var adminRouter = require('./routes/admin');
-var userRouter = require('./routes/users')
+/**
+ * Get port from environment and store in Express.
+ */
 
-var app = express();
-var session = require('express-session')
-require('dotenv').config()
+var port = normalizePort(process.env.PORT || '9000');
+app.set('port', port);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+/**
+ * Create HTTP server.
+ */
 
-app.use(cors({
-  origin: '*',
-  exposedHeaders: 'Content-Range'
-}));
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+var server = http.createServer(app);
 
-//database connection
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-mongoose.connect(process.env.MONGO_URL).then(() => {
-  console.log('Database Connected');
-}).catch((err) => {
-  console.log("Database Connection Error - " + err);
-})
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-app.use(session({
-  secret: "key",
-  cookie: { maxAge: 6000000 },
-  resave: true,
-  saveUninitialized: true
-}))
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
-app.use('/admin', adminRouter);
-app.use('/', userRouter)
+function normalizePort(val) {
+  var port = parseInt(val, 10);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  if (port >= 0) {
+    // port number
+    return port;
+  }
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+  return false;
+}
 
-module.exports = app;
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
